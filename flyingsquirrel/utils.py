@@ -1,3 +1,7 @@
+#
+# See COPYING for copyright and licensing.
+#
+
 import base64
 import urllib2
 import re
@@ -27,21 +31,20 @@ def json_request(method, url, body=None):
     if body is not None:
         request.add_data(json.dumps(body)),
     request.get_method = lambda : method
-    response = opener.open(request)
 
-    response_data = response.read()
+    try:
+        response = opener.open(request)
+    except urllib2.HTTPError as e:
+        raise exceptions.HttpError(url, e.getcode(), e.read())
 
-    if response.getcode() == 200 and response_data:
-        response_data = json.loads(response_data)
-    else:
-        raise exceptions.HttpError("Error on: %s %s -> %s %s" %
-                                   (method, url, response.getcode(), response_data))
     res = JsonResponse()
     res.status = response.getcode()
-    res.body = response_data
+    res.body = response.read()
     res.headers = dict(response.info().items())
 
-    if res.status not in (200,):
-        raise exceptions.HttpError("%r --> %r %r" %
-                                   (url, res.status, res.body))
+    if res.status in (200, 204):
+        if res.headers['content-type'] == "application/json" and res.body:
+            res.body = json.loads(res.body)
+    else:
+        raise exceptions.HttpError(url, res.status, res.body)
     return res

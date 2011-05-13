@@ -1,3 +1,7 @@
+#
+# See COPYING for copyright and licensing.
+#
+
 import urllib
 
 from .utils import json_request
@@ -5,33 +9,29 @@ from . import exceptions
 
 
 class Client(object):
-    def __init__(self, base_url):
-        self.base_url = base_url.strip('/')
+    def __init__(self, service_url):
+        self.base_url = service_url.strip('/') + '/endpoints/'
+
+    def get_endpoint(self, endpoint_name):
+        url = self.base_url + urllib.quote(endpoint_name)
+        return json_request('GET', url).body
 
     def create_endpoint(self, endpoint_name, definition={}):
-        url = self.base_url + '/endpoints/' \
-            + urllib.quote(endpoint_name)
-        res = json_request('PUT', url, {'definition': definition})
-        return res.body
+        url = self.base_url + urllib.quote(endpoint_name)
+        return json_request('PUT', url, {'definition': definition}).body
 
     def delete_endpoint(self, endpoint_name):
-        url = self.base_url + '/endpoints/' \
-            + urllib.quote(endpoint_name)
-        res = json_request('DELETE', url)
+        url = self.base_url + urllib.quote(endpoint_name)
+        json_request('DELETE', url)
         return True
 
     def list_endpoints(self):
-        url = self.base_url + '/endpoints'
-        res = json_request('GET', url)
-        return res.body
+        url = self.base_url
+        return json_request('GET', url).body
 
     def generate_ticket(self, endpoint_name, identity, timeout=None):
-        url = self.base_url + '/endpoints/' \
-            + urllib.quote(endpoint_name) + '/tickets'
+        url = self.base_url + urllib.quote(endpoint_name) + '/tickets'
         req = {'identity': identity}
         if timeout is not None:
             req['timeout'] = timeout
-        res = json_request('POST', url, req)
-        return res.body['ticket']
-
-
+            return json_request('POST', url, req).body['ticket']

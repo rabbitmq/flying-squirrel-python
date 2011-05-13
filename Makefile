@@ -1,16 +1,12 @@
 
-run: venv/.ok
-	(cd django_examples; PYTHONPATH=.. ./manage.py runserver 0.0.0.0:8000;)
+build:
+	python setup.py build
 
-
-venv/.ok:
-	virtualenv venv
-	./venv/bin/easy_install django
-	rm -f distribute-0.6.10.tar.gz
-	touch venv/.ok
-
-distclean::
-	rm -rf venv
+test: tests
+tests:
+	SERVICE_URL='http://guest:guest@localhost:55672/socks-api/default' \
+		python setup.py test
 
 clean::
+	rm -rf flyingsquirrel.egg-info build
 	find . -name \*pyc|xargs --no-run-if-empty rm
