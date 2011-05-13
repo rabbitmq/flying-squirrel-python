@@ -3,7 +3,12 @@
 #
 
 from setuptools import setup
-import os
+
+# Some filesystems don't support hard links. Use the power of
+# monkeypatching to overcome the problem.
+import os, shutil
+os.link = shutil.copy
+
 
 long_description = """\
 Flyingsquirrel is a Python library for use with the Flying Squirrel
@@ -19,6 +24,7 @@ setup(name = 'flyingsquirrel',
       packages = ['flyingsquirrel'],
       test_suite = 'flyingsquirrel.tests.test_client',
       license = 'MPL v1.1',
+      platforms = ['any'],
       classifiers = [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
