@@ -2,6 +2,6 @@
 # See COPYING for copyright and licensing.
 #
 
-from .client import Client
+from .api import API
 from .exceptions import HttpError
 

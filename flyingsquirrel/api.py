@@ -7,7 +7,7 @@ import urllib
 from .utils import json_request
 
 
-class Client(object):
+class API(object):
     def __init__(self, service_url):
         self.base_url = service_url.strip('/') + '/endpoints/'
 
