@@ -3,5 +3,5 @@
 #
 
 from .client import Client
-from .exceptions import *
+from .exceptions import HttpError
 

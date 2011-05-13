@@ -2,7 +2,6 @@
 # See COPYING for copyright and licensing.
 #
 
-import base64
 import urllib2
 import re
 import json
@@ -11,7 +10,10 @@ from . import exceptions
 
 
 class JsonResponse(object):
-    pass
+    def __init__(self, status, body, headers):
+        self.status = status
+        self.body = body
+        self.headers = headers
 
 def json_request(method, url, body=None):
     # urllib2 doesn't understand user/pass in the url
@@ -29,18 +31,17 @@ def json_request(method, url, body=None):
     request = urllib2.Request(stripped_url,
                               headers={"Content-type": "application/json"})
     if body is not None:
-        request.add_data(json.dumps(body)),
+        request.add_data(json.dumps(body))
     request.get_method = lambda : method
 
     try:
         response = opener.open(request)
-    except urllib2.HTTPError as e:
-        raise exceptions.HttpError(url, e.getcode(), e.read())
+    except urllib2.HTTPError as ex:
+        raise exceptions.HttpError(url, ex.getcode(), ex.read())
 
-    res = JsonResponse()
-    res.status = response.getcode()
-    res.body = response.read()
-    res.headers = dict(response.info().items())
+    res = JsonResponse(response.getcode(),
+                       response.read(),
+                       dict(response.info().items()))
 
     if res.status in (200, 204):
         if res.headers['content-type'] == "application/json" and res.body:

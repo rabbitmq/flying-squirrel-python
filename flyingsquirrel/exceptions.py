@@ -2,4 +2,5 @@
 # See COPYING for copyright and licensing.
 #
 
-class HttpError(Exception): pass
+class HttpError(Exception):
+    pass

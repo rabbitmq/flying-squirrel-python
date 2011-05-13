@@ -5,7 +5,6 @@
 import urllib
 
 from .utils import json_request
-from . import exceptions
 
 
 class Client(object):
@@ -16,7 +15,9 @@ class Client(object):
         url = self.base_url + urllib.quote(endpoint_name)
         return json_request('GET', url).body
 
-    def create_endpoint(self, endpoint_name, definition={}):
+    def create_endpoint(self, endpoint_name, definition=None):
+        if definition is None:
+            definition = {}
         url = self.base_url + urllib.quote(endpoint_name)
         return json_request('PUT', url, {'definition': definition}).body
 
