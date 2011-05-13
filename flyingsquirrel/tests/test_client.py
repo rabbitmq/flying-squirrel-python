@@ -22,8 +22,8 @@ class TestClient(unittest.TestCase):
     def test_basic(self):
         # Create endpoint, check if it appears in the list, get, delete.
         c = flyingsquirrel.Client(SERVICE_URL)
-
         endpoint_name = rand_str()
+
         e = c.create_endpoint(endpoint_name, {})
         self.assertEqual(e['endpoint_name'], endpoint_name)
 
@@ -37,7 +37,6 @@ class TestClient(unittest.TestCase):
 
     def test_errors(self):
         c = flyingsquirrel.Client(SERVICE_URL)
-
         endpoint_name = rand_str()
 
         with self.assertRaises(flyingsquirrel.HttpError) as e:
@@ -47,6 +46,21 @@ class TestClient(unittest.TestCase):
         with self.assertRaises(flyingsquirrel.HttpError) as e:
             c.delete_endpoint(endpoint_name)
         self.assertEquals(e.exception[1], 404)
+
+    def test_ticket(self):
+        c = flyingsquirrel.Client(SERVICE_URL)
+        endpoint_name = rand_str()
+
+        e1 = c.create_endpoint(endpoint_name, {})
+        self.assertEqual(e1['endpoint_name'], endpoint_name)
+        e2 = c.get_endpoint(endpoint_name)
+        self.assertEqual(e1, e2)
+
+        t = c.generate_ticket(endpoint_name, 'guest')
+        self.assertIsInstance(t, unicode)
+        self.assertTrue(len(t))
+
+        self.assertTrue(c.delete_endpoint(endpoint_name))
 
 
 if __name__ == '__main__':

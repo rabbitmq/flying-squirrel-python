@@ -34,4 +34,4 @@ class Client(object):
         req = {'identity': identity}
         if timeout is not None:
             req['timeout'] = timeout
-            return json_request('POST', url, req).body['ticket']
+        return json_request('POST', url, req).body['ticket']
