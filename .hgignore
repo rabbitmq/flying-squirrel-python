@@ -1,0 +1,4 @@
+^venv/
+^flyingsquirrel.egg-info/
+^dist/
+\.pyc$

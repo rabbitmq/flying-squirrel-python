@@ -5,7 +5,12 @@
 import os
 import random
 import string
-import unittest
+try:
+    # For python2.6 we need unittest backported from 2.7.
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
 
 import flyingsquirrel
 
