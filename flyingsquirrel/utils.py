@@ -15,7 +15,7 @@ class JsonResponse(object):
         self.body = body
         self.headers = headers
 
-def json_request(method, url, body=None):
+def json_request(method, url, body=None, headers=None):
     # urllib2 doesn't understand user/pass in the url
     scheme, _, username, password, rest = \
         re.match("^([^:]*://)(([^:]*):([^@]*)@)?(.*)", url).groups()
@@ -28,8 +28,11 @@ def json_request(method, url, body=None):
 
     opener = urllib2.build_opener(handler)
 
-    request = urllib2.Request(stripped_url,
-                              headers={"Content-type": "application/json"})
+    if headers is None:
+        headers = {}
+    headers.update({"Content-type": "application/json"})
+
+    request = urllib2.Request(stripped_url, headers=headers)
     if body is not None:
         request.add_data(json.dumps(body))
     request.get_method = lambda : method
@@ -37,13 +40,13 @@ def json_request(method, url, body=None):
     try:
         response = opener.open(request)
     except urllib2.HTTPError as ex:
-        raise exceptions.HttpError(url, ex.getcode(), ex.read())
+        raise exceptions.HttpError(method, url, ex.getcode(), ex.read())
 
     res = JsonResponse(response.getcode(),
                        response.read(),
                        dict(response.info().items()))
 
-    if res.status in (200, 204):
+    if res.status in (200, 201, 204):
         if res.headers['content-type'] == "application/json" and res.body:
             res.body = json.loads(res.body)
     else:

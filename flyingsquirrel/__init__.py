@@ -3,5 +3,6 @@
 #
 
 from .api import API
+from .client import WebHooksClient
 from .exceptions import HttpError
 

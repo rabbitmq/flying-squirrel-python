@@ -3,8 +3,6 @@
 #
 
 import os
-import random
-import string
 try:
     # For python2.6 we need unittest backported from 2.7.
     import unittest2 as unittest
@@ -13,11 +11,8 @@ except ImportError:
 
 
 import flyingsquirrel
+from .common import rand_str, SERVICE_URL
 
-rand_str = lambda: ''.join(random.choice(string.letters) for i in xrange(8))
-
-
-SERVICE_URL=os.environ.get('SERVICE_URL', 'http://guest:guest@localhost:55672/socks-api/default')
 
 class TestAPI(unittest.TestCase):
     def test_list(self):
@@ -46,11 +41,11 @@ class TestAPI(unittest.TestCase):
 
         with self.assertRaises(flyingsquirrel.HttpError) as e:
             c.get_endpoint(endpoint_name)
-        self.assertEquals(e.exception[1], 404)
+        self.assertEquals(e.exception[2], 404)
 
         with self.assertRaises(flyingsquirrel.HttpError) as e:
             c.delete_endpoint(endpoint_name)
-        self.assertEquals(e.exception[1], 404)
+        self.assertEquals(e.exception[2], 404)
 
     def test_ticket(self):
         c = flyingsquirrel.API(SERVICE_URL)
