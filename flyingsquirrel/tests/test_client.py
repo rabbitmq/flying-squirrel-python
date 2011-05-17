@@ -101,6 +101,7 @@ class TestWebHooksClient(WebHooksClientTestsBase):
         conn.deliver_message(body, headers)
         # Make sure the callback was run.
         self.assertEqual(r[0], 'test')
+        conn.disconnect()
 
 
     @test_with_endpoint({'req': ['req', 'x-reqrep'],
@@ -126,6 +127,7 @@ class TestWebHooksClient(WebHooksClientTestsBase):
         conn.deliver_message(body, headers)
 
         self.assertEqual(answers, ['r_a'])
+        conn.disconnect()
 
 if __name__ == '__main__':
     unittest.main()
