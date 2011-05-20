@@ -113,7 +113,7 @@ class TestWebHooksClient(WebHooksClientTestsBase):
                                              self.t,
                                              self.url)
         def worker(msg, send_answer, **kwargs):
-            print send_answer('r_' + msg)
+            send_answer('r_' + msg)
         conn.serve('rep', worker)
 
         answers = []

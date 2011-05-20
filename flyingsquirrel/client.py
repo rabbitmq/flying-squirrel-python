@@ -44,9 +44,11 @@ class WebHooksClient(object):
         return 200
 
 
-    def publish(self, channel, body):
-        self._send({'channel': channel,
-                    'body': body})
+    def publish(self, channel, body, msgobj=None):
+        m = {}
+        if msgobj: m.update(msgobj)
+        m.update({'channel': channel, 'body': body})
+        self._send(m)
 
     def subscribe(self, channel, callback):
         self.channels[channel] = callback
@@ -60,10 +62,10 @@ class WebHooksClient(object):
         self.publish(channel, question)
 
     def serve(self, channel, callback):
-        def cb(msg, **kwargs):
+        def cb(msg, channel=None, msgobj=None, **kwargs):
             def an(answer):
-                return self._send({'channel': kwargs['channel'],
-                                   'reply-to': kwargs['msgobj']['reply-to'],
+                return self._send({'channel': channel,
+                                   'reply-to':msgobj['reply-to'],
                                    'body': answer})
             callback(msg, an, **kwargs)
         self.subscribe(channel, cb)
