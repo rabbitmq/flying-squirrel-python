@@ -30,3 +30,6 @@ sdist:
 clean::
 	rm -rf flyingsquirrel.egg-info build dist venv distribute-0.6.10.tar.gz
 	find . -name \*pyc|xargs --no-run-if-empty rm
+
+release:
+	python setup.py sdist upload

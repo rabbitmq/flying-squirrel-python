@@ -1,3 +1,4 @@
+include VERSION
 include COPYING
 include LICENSE*
 include README*
