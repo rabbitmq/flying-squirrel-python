@@ -78,12 +78,12 @@ You need this import:
 
 To connect to Flying Squirrel service you need the `api_url`.
 
-   api = flyingsquirrel.API(api_url)
-   endpoint = api.create_endpoint(endpoint_name,
-                                  endpoint_definition)
+    api = flyingsquirrel.API(api_url)
+    endpoint = api.create_endpoint(endpoint_name,
+                                   endpoint_definition)
 
-   transport_url = endpoint['protocols']['webhooks']
-   ticket = api.generate_ticket(endpoint_name, identity)
+    transport_url = endpoint['protocols']['webhooks']
+    ticket = api.generate_ticket(endpoint_name, identity)
 
 Documentation
 -------------
